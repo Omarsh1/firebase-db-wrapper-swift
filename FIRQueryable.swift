@@ -10,7 +10,7 @@ extension FIRQueryable where Self: FIRModel
 {
     func getExternal(completion: @escaping () -> Void)
     {
-        Self.GetCollectionRef().child(self.key).observeSingleEvent(of: .value) { (snapshot: FIRDataSnapshot) in
+        Self.GetCollectionRef().child(self.key).observeSingleEvent(of: .value) { (snapshot: DataSnapshot) in
             
             self.snapshot = snapshot
             completion()
@@ -19,7 +19,7 @@ extension FIRQueryable where Self: FIRModel
     
     static func All(completion: @escaping ([Self]) -> Void)
     {
-        self.GetCollectionRef().observeSingleEvent(of: .value) { (snapshot: FIRDataSnapshot) in
+        self.GetCollectionRef().observeSingleEvent(of: .value) { (snapshot: DataSnapshot) in
             
             completion(self.GetModels(fromContainerSnapshot: snapshot))
         }
@@ -27,7 +27,7 @@ extension FIRQueryable where Self: FIRModel
     
     static func From(key: String, completion: @escaping (Self) -> Void)
     {
-        self.GetCollectionRef().child(key).observeSingleEvent(of: .value) { (snapshot: FIRDataSnapshot) in
+        self.GetCollectionRef().child(key).observeSingleEvent(of: .value) { (snapshot: DataSnapshot) in
             
             completion(Self(snapshot: snapshot))
         }
@@ -35,7 +35,7 @@ extension FIRQueryable where Self: FIRModel
     
 	static func Top(_ limit: UInt, completion: @escaping ([Self]) -> Void)
 	{
-		self.GetCollectionRef().queryLimited(toFirst: limit).observeSingleEvent(of: .value) { (snapshot: FIRDataSnapshot) in
+        self.GetCollectionRef().queryLimited(toFirst: limit).observeSingleEvent(of: .value) { (snapshot: DataSnapshot) in
 			
 			completion(self.GetModels(fromContainerSnapshot: snapshot))
 		}
@@ -47,7 +47,7 @@ extension FIRQueryable where Self: FIRModel
             .queryOrdered(byChild: path)
             .queryEqual(toValue: value)
             .queryLimited(toFirst: limit)
-            .observeSingleEvent(of: .value) { (snapshot: FIRDataSnapshot) in
+            .observeSingleEvent(of: .value) { (snapshot: DataSnapshot) in
                 
                 completion(self.GetModels(fromContainerSnapshot: snapshot))
         }
@@ -62,20 +62,20 @@ extension FIRQueryable where Self: FIRModel
         }
     }
     
-    static func GetModels(fromContainerSnapshot snapshot: FIRDataSnapshot) -> [Self]
+    static func GetModels(fromContainerSnapshot snapshot: DataSnapshot) -> [Self]
     {
         var models: [Self] = []
         
-        for obj in snapshot.children where obj is FIRDataSnapshot
+        for obj in snapshot.children where obj is DataSnapshot
         {
-            models.append(Self.init(snapshot: obj as! FIRDataSnapshot))
+            models.append(Self.init(snapshot: obj as! DataSnapshot))
         }
         
         return models
     }
     
-    static func GetCollectionRef() -> FIRDatabaseReference
+    static func GetCollectionRef() -> DatabaseReference
     {
-        return FIRDatabase.database().reference().child(COLLECTION_NAME)
+        return Database.database().reference().child(COLLECTION_NAME)
     }
 }

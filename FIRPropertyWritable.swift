@@ -12,7 +12,7 @@ extension FIRPropertyWritable where Self: FIRModel
     
     func add(key: String, forNode nodePath: String, completion: ((Error?) -> Void)? = nil)
     {
-        self.snapshot.ref.child(nodePath).updateChildValues([key : true]) { (error: Error?, ref: FIRDatabaseReference) in
+        self.snapshot.ref.child(nodePath).updateChildValues([key : true]) { (error: Error?, ref: DatabaseReference) in
             
             completion?(error)
         }

@@ -28,16 +28,16 @@ extension FIRStorageDownloadable where Self: FIRModel
             return
         }
         
-        ref.data(withMaxSize: maxSize, completion: completion)
+        ref.getData(maxSize: maxSize, completion: completion)
     }
     
-    fileprivate func getStorageRef() -> FIRStorageReference?
+    fileprivate func getStorageRef() -> StorageReference?
     {
         guard let loc = location else
         {
             return nil
         }
         
-        return FIRStorage.storage().reference(withPath: loc)
+        return Storage.storage().reference(withPath: loc)
     }
 }
